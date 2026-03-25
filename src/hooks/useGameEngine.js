@@ -93,7 +93,7 @@ export const useGameEngine = () => {
         // Auto progress phases based on global stats
         setPhase(currentPhase => {
           if (currentPhase === 1 && newGlobalAcidity < 40 && newGlobalTemp < 40) return 2;
-          if (currentPhase === 2 && coralCount >= 10 && e > 200) return 3;
+          if (currentPhase === 2 && coralCount >= 10 && energy >= 200) return 3;
           if (currentPhase === 3 && biodiversity >= 5) return 4;
           return currentPhase;
         });
@@ -103,7 +103,7 @@ export const useGameEngine = () => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [globalAcidity, globalTemp, biodiversity]);
+  }, [globalAcidity, globalTemp, biodiversity, energy]);
 
   const placeTool = useCallback((x, y, toolId) => {
     const tool = TOOLS[toolId];
