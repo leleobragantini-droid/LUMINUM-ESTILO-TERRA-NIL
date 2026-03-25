@@ -131,8 +131,10 @@ export const useGameEngine = () => {
       } else if (tool.id === 'recycler' && cell.type === 'machine') {
          cell.type = 'empty';
          cell.contentId = null;
-         setEnergy(e => e + 10);
-         return currentGrid; // return early to not deduct cost
+         row[x] = cell;
+         newGrid[y] = row;
+         setEnergy(e => e + 10); // devolve 10 de energia
+         return newGrid; // retorna grid atualizado sem descontar custo
       } else if (tool.id === 'algae_seeder' && cell.type === 'dead_coral') {
          cell.type = 'coral';
          cell.contentId = 'brain_coral'; // default revive
