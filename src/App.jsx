@@ -9,8 +9,14 @@ const IconWrapper = ({ iconName, size = 24, ...props }) => {
   let matchedName = iconName;
   if (iconName === 'ThermometerSnowflake') matchedName = 'Snowflake';
   if (iconName === 'FishSymbol') matchedName = 'Fish';
+  if (iconName === 'CheckCircle2') {
+    if (Icons.CircleCheck) matchedName = 'CircleCheck';
+    else if (Icons.CheckCircle2) matchedName = 'CheckCircle2';
+    else matchedName = 'CheckCircle';
+  }
   
-  const IconComponent = Icons[matchedName] || Icons.HelpCircle;
+  const IconComponent = Icons[matchedName] || Icons.CircleHelp || Icons.HelpCircle || Icons.Circle;
+  if (!IconComponent) return <span style={{width: size, height: size, display: 'inline-block'}} />;
   return <IconComponent size={size} {...props} />;
 };
 
@@ -134,24 +140,24 @@ function App() {
              <h3>Objetivos</h3>
              {phase === 1 && (
                <ul className="objectives">
-                 <li className={globalAcidity < 40 ? 'done' : ''}><Icons.CheckCircle2 size={16}/> Acidez &lt; 40%</li>
-                 <li className={globalTemp < 40 ? 'done' : ''}><Icons.CheckCircle2 size={16}/> Temp &lt; 40%</li>
+                 <li className={globalAcidity < 40 ? 'done' : ''}><IconWrapper iconName="CheckCircle2" size={16}/> Acidez &lt; 40%</li>
+                 <li className={globalTemp < 40 ? 'done' : ''}><IconWrapper iconName="CheckCircle2" size={16}/> Temp &lt; 40%</li>
                </ul>
              )}
              {phase === 2 && (
                <ul className="objectives">
-                 <li className={energy >= 200 ? 'done' : ''}><Icons.CheckCircle2 size={16}/> 200 Energia</li>
-                 <li className={grid.flat().filter(c => c.type === 'coral').length >= 10 ? 'done' : ''}><Icons.CheckCircle2 size={16}/> 10 Corais</li>
+                 <li className={energy >= 200 ? 'done' : ''}><IconWrapper iconName="CheckCircle2" size={16}/> 200 Energia</li>
+                 <li className={grid.flat().filter(c => c.type === 'coral').length >= 10 ? 'done' : ''}><IconWrapper iconName="CheckCircle2" size={16}/> 10 Corais</li>
                </ul>
              )}
              {phase === 3 && (
                <ul className="objectives">
-                 <li className={biodiversity >= 5 ? 'done' : ''}><Icons.CheckCircle2 size={16}/> Biodiversidade: 5</li>
+                 <li className={biodiversity >= 5 ? 'done' : ''}><IconWrapper iconName="CheckCircle2" size={16}/> Biodiversidade: 5</li>
                </ul>
              )}
              {phase === 4 && (
                <ul className="objectives">
-                 <li className={grid.flat().filter(c => c.type === 'machine').length === 0 ? 'done' : ''}><Icons.CheckCircle2 size={16}/> Remover Máquinas</li>
+                 <li className={grid.flat().filter(c => c.type === 'machine').length === 0 ? 'done' : ''}><IconWrapper iconName="CheckCircle2" size={16}/> Remover Máquinas</li>
                </ul>
              )}
            </div>

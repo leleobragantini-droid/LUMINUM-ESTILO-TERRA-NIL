@@ -23,24 +23,26 @@ const generateInitialGrid = () => {
 };
 
 export const useGameEngine = () => {
-  const [grid, setGrid] = useState(generateInitialGrid);
-  const [energy, setEnergy] = useState(INITIAL_ENERGY);
-  const [phase, setPhase] = useState(1);
-  const [globalAcidity, setGlobalAcidity] = useState(100);
-  const [globalTemp, setGlobalTemp] = useState(100);
-  const [biodiversity, setBiodiversity] = useState(0);
+  const [gameState, setGameState] = useState(() => ({
+    grid: generateInitialGrid(),
+    energy: INITIAL_ENERGY,
+    phase: 1,
+    globalAcidity: 100,
+    globalTemp: 100,
+    biodiversity: 0
+  }));
 
   // The main Game Loop tick
   useEffect(() => {
     const timer = setInterval(() => {
-      setGrid(currentGrid => {
+      setGameState(prevState => {
         let newEnergyGen = 0;
         let activePurifiers = 0;
         let activeCoolers = 0;
         let activeMangroves = 0;
         let coralCount = 0;
 
-        const nextGrid = currentGrid.map(row => row.map(cell => {
+        const nextGrid = prevState.grid.map(row => row.map(cell => {
           let updatedCell = { ...cell };
           
           if (cell.type === 'machine') {
@@ -75,8 +77,8 @@ export const useGameEngine = () => {
         }));
 
         // Apply global effects from machines
-        let newGlobalAcidity = Math.max(0, globalAcidity - (activePurifiers * 0.5) - (activeMangroves * 1) - (coralCount * 0.1));
-        let newGlobalTemp = Math.max(0, globalTemp - (activeCoolers * 0.5));
+        let newGlobalAcidity = Math.max(0, prevState.globalAcidity - (activePurifiers * 0.5) - (activeMangroves * 1) - (coralCount * 0.1));
+        let newGlobalTemp = Math.max(0, prevState.globalTemp - (activeCoolers * 0.5));
 
         // Let global impact local
         const finalGrid = nextGrid.map(row => row.map(cell => {
@@ -86,33 +88,39 @@ export const useGameEngine = () => {
            return finalCell;
         }));
 
-        setGlobalAcidity(newGlobalAcidity);
-        setGlobalTemp(newGlobalTemp);
-        setEnergy(e => Math.min(9999, Math.floor(e + newEnergyGen)));
+        const newEnergy = Math.min(9999, Math.floor(prevState.energy + newEnergyGen));
         
         // Auto progress phases based on global stats
-        setPhase(currentPhase => {
-          if (currentPhase === 1 && newGlobalAcidity < 40 && newGlobalTemp < 40) return 2;
-          if (currentPhase === 2 && coralCount >= 10 && energy >= 200) return 3;
-          if (currentPhase === 3 && biodiversity >= 5) return 4;
-          return currentPhase;
-        });
+        let newPhase = prevState.phase;
+        if (newPhase === 1 && newGlobalAcidity < 40 && newGlobalTemp < 40) newPhase = 2;
+        if (newPhase === 2 && coralCount >= 10 && newEnergy >= 200) newPhase = 3;
+        if (newPhase === 3 && prevState.biodiversity >= 5) newPhase = 4;
 
-        return finalGrid;
+        return {
+          ...prevState,
+          grid: finalGrid,
+          globalAcidity: newGlobalAcidity,
+          globalTemp: newGlobalTemp,
+          energy: newEnergy,
+          phase: newPhase
+        };
       });
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [globalAcidity, globalTemp, biodiversity, energy]);
+  }, []);
 
   const placeTool = useCallback((x, y, toolId) => {
-    const tool = TOOLS[toolId];
-    if (!tool || energy < tool.cost) return false;
+    setGameState(prevState => {
+      const tool = TOOLS[toolId];
+      if (!tool || prevState.energy < tool.cost) return prevState;
 
-    setGrid(currentGrid => {
-      const newGrid = [...currentGrid];
+      const newGrid = [...prevState.grid];
       const row = [...newGrid[y]];
       const cell = { ...row[x] };
+
+      let newEnergy = prevState.energy;
+      let newBiodiversity = prevState.biodiversity;
 
       // Tool placement rules
       if (tool.type === 'machine' && cell.type === 'empty') {
@@ -127,36 +135,34 @@ export const useGameEngine = () => {
       } else if (tool.type === 'fauna' && cell.type !== 'machine') {
          cell.type = 'fauna';
          cell.contentId = tool.id;
-         setBiodiversity(b => b + 1);
+         newBiodiversity += 1;
       } else if (tool.id === 'recycler' && cell.type === 'machine') {
          cell.type = 'empty';
          cell.contentId = null;
          row[x] = cell;
          newGrid[y] = row;
-         setEnergy(e => e + 10); // devolve 10 de energia
-         return newGrid; // retorna grid atualizado sem descontar custo
-      } else if (tool.id === 'algae_seeder' && cell.type === 'dead_coral') {
+         return { ...prevState, grid: newGrid, energy: newEnergy + 10 }; // devolve 10 de energia
+      } else if ((tool.id === 'algae_seeder' || tool.id === 'bio_cement') && cell.type === 'dead_coral') {
          cell.type = 'coral';
          cell.contentId = 'brain_coral'; // default revive
       } else {
-        return currentGrid; // invalid placement
+        return prevState; // invalid placement
       }
 
       row[x] = cell;
       newGrid[y] = row;
-      setEnergy(e => e - tool.cost);
-      return newGrid;
+      return { 
+        ...prevState, 
+        grid: newGrid, 
+        energy: newEnergy - tool.cost, 
+        biodiversity: newBiodiversity 
+      };
     });
     return true;
-  }, [energy]);
+  }, []);
 
   return {
-    grid,
-    energy,
-    phase,
-    globalAcidity,
-    globalTemp,
-    biodiversity,
+    ...gameState,
     placeTool
   };
 };
