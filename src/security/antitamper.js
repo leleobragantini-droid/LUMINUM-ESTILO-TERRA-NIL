@@ -114,11 +114,25 @@ export function checkOriginIntegrity() {
   return true;
 }
 
-// ─── Proteção contra DevTools ───────────────────────────────────────
+// ─── Proteção contra DevTools (Funções F12) ───────────────────────────────────
 function _lockdownDevTools() {
-  // 1. Bloqueia APENAS a tecla de atalho principal do console (F12)
+  // 1. Bloqueia o Menu de Botão Direito ("Inspecionar Elemento")
+  document.addEventListener('contextmenu', (e) => e.preventDefault());
+
+  // 2. Bloqueia TODAS as teclas de atalho que abrem o F12
   document.addEventListener('keydown', (e) => {
+    // Tecla F12 direta
     if (e.key === 'F12') {
+      e.preventDefault();
+    }
+    // Ctrl + Shift + I (Abrir DevTools)
+    // Ctrl + Shift + J (Abrir Console)
+    // Ctrl + Shift + C (Inspecionar Elemento)
+    if (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) {
+      e.preventDefault();
+    }
+    // Ctrl + U (Ver Código Fonte)
+    if (e.ctrlKey && e.key.toUpperCase() === 'U') {
       e.preventDefault();
     }
   });
