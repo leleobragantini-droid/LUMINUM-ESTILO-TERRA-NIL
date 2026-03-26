@@ -1,21 +1,21 @@
 export const PHASES = {
-  1: { id: 1, name: "Estabilização", description: "Estabilize a química da água neutralizando acidez e temperatura." },
-  2: { id: 2, name: "Semeadura", description: "Plante diferentes tipos de corais para gerar Energia Fotossintética." },
-  3: { id: 3, name: "Reintrodução da Fauna", description: "Traga vida animal para criar equilíbrio." },
-  4: { id: 4, name: "Reciclagem", description: "Remova o maquinário e deixe o recife autossustentável." }
+  1: { id: 1, name: "Estabilização", description: "Estabilize a química da água neutralizando acidez e temperatura. A acidez e temperatura sobem rápido — use purificadores e resfriadores antes que seja tarde demais!" },
+  2: { id: 2, name: "Semeadura", description: "Plante corais para gerar Energia Fotossintética. Cuidado: os corais morrem se a acidez ou temperatura subirem novamente!" },
+  3: { id: 3, name: "Reintrodução da Fauna", description: "Traga vida animal para criar equilíbrio ecológico. Introduza 5 espécies diferentes para avançar." },
+  4: { id: 4, name: "Reciclagem", description: "Remova TODO o maquinário e deixe o recife autossustentável. Quando todas as máquinas forem removidas, o recife estará salvo!" },
 };
 
 export const TOOLS = {
   // Phase 1 Tools
   purifier: {
     id: 'purifier', name: 'Purificador de Carbonato',
-    phase: 1, cost: 20, type: 'machine',
-    desc: 'Reduz a acidez local.',
+    phase: 1, cost: 30, type: 'machine',
+    desc: 'Reduz a acidez local. Custa mais energia mas é essencial na fase 1.',
     icon: 'Droplet'
   },
   cooler: {
     id: 'cooler', name: 'Resfriador Geotérmico',
-    phase: 1, cost: 20, type: 'machine',
+    phase: 1, cost: 30, type: 'machine',
     desc: 'Reduz a temperatura local da água.',
     icon: 'ThermometerSnowflake'
   },
@@ -23,71 +23,71 @@ export const TOOLS = {
   // Phase 2 Tools
   brain_coral: {
     id: 'brain_coral', name: 'Coral Cérebro',
-    phase: 2, cost: 30, type: 'coral',
-    desc: 'Gera 2 Energias Fotossintéticas/s.',
+    phase: 2, cost: 40, type: 'coral',
+    desc: 'Gera 2 Energias/tick. Moderadamente sensível a acidez e temperatura.',
     icon: 'Brain'
   },
   fire_coral: {
     id: 'fire_coral', name: 'Coral de Fogo',
-    phase: 2, cost: 20, type: 'coral',
-    desc: 'Gera 1 Energia/s. Mais resistente a temperaturas altas.',
+    phase: 2, cost: 30, type: 'coral',
+    desc: 'Gera 1 Energia/tick. Resistente a alta temperatura.',
     icon: 'Flame'
   },
   fan_coral: {
     id: 'fan_coral', name: 'Coral Leque',
-    phase: 2, cost: 40, type: 'coral',
-    desc: 'Gera 3 Energia/s. Mais sensível à acidez.',
+    phase: 2, cost: 60, type: 'coral',
+    desc: 'Gera 3 Energia/tick. Muito sensível à acidez — proteja-o bem!',
     icon: 'Wind'
   },
 
   // Phase 3 Tools
   octopus: {
     id: 'octopus', name: 'Polvo',
-    phase: 3, cost: 50, type: 'fauna',
-    desc: 'Controla algas invasoras.',
+    phase: 3, cost: 80, type: 'fauna',
+    desc: 'Controla algas invasoras e aumenta biodiversidade.',
     icon: 'Tent' 
   },
   turtle: {
     id: 'turtle', name: 'Tartaruga',
-    phase: 3, cost: 100, type: 'fauna',
-    desc: 'Mantém o equilíbrio do recife (+500 pontos vitais).',
+    phase: 3, cost: 120, type: 'fauna',
+    desc: 'Mantém o equilíbrio do recife. Aumenta biodiversidade.',
     icon: 'Shield'
   },
   shark: {
     id: 'shark', name: 'Tubarão de Recife',
-    phase: 3, cost: 150, type: 'fauna',
-    desc: 'Predador topo, consolida a saúde da fauna.',
+    phase: 3, cost: 180, type: 'fauna',
+    desc: 'Predador topo. Consolida a saúde da fauna e aumenta biodiversidade.',
     icon: 'FishSymbol'
   },
 
   // Special Tools
   bio_cement: {
     id: 'bio_cement', name: 'Bio-Cimento',
-    phase: null, cost: 15, type: 'action',
-    desc: 'Conserta estruturas de corais quebradas pela acidez.',
+    phase: null, cost: 20, type: 'action',
+    desc: 'Conserta corais quebrados pela acidez.',
     icon: 'Hammer'
   },
   algae_seeder: {
     id: 'algae_seeder', name: 'Semeador de Algas',
-    phase: null, cost: 25, type: 'action',
+    phase: null, cost: 35, type: 'action',
     desc: 'Recupera a cor de corais branqueados.',
     icon: 'Sprout'
   },
   mangrove: {
     id: 'mangrove', name: 'Manguezal Costeiro',
-    phase: null, cost: 80, type: 'mangrove',
-    desc: 'Planta apenas nas bordas. Filtra água de forma global.',
+    phase: null, cost: 100, type: 'mangrove',
+    desc: 'Plante apenas nas bordas do mapa. Filtra água globalmente.',
     icon: 'Trees'
   },
   
   // Phase 4 Tools
   recycler: {
     id: 'recycler', name: 'Reciclador',
-    phase: 4, cost: 0, type: 'action', // returns energy
-    desc: 'Remove máquinas, recuperando 10 energia.',
+    phase: 4, cost: 0, type: 'action',
+    desc: 'Remove máquinas do grid, recuperando 10 energia.',
     icon: 'Recycle'
   }
 };
 
-export const INITIAL_ENERGY = 150;
-export const GRID_SIZE = 12; // 12x12 grid
+export const INITIAL_ENERGY = 100; // Less starting energy = harder
+export const GRID_SIZE = 12;
