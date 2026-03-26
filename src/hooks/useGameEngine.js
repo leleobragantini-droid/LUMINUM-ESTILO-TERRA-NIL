@@ -37,6 +37,11 @@ export const useGameEngine = () => {
     if (gameState.gameOver) return;
 
     const timer = setInterval(() => {
+      // AFK CHECK: Se a aba estiver escondida ou a janela não tiver foco (ex: clicou no console/devtools ou em outro programa)
+      if (document.hidden || !document.hasFocus()) {
+        return; // Pausa a geração de energia e o tempo do jogo
+      }
+
       setGameState(prevState => {
         if (prevState.gameOver) return prevState;
 

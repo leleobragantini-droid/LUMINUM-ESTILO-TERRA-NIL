@@ -852,3 +852,27 @@
 ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
 ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.25); }
+
+/* ─── AFK Overlay ────────────────────────────── */
+.afk-overlay {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+  color: white; text-align: center;
+  animation: popIn 0.3s ease-out;
+  cursor: pointer;
+}
+
+.afk-overlay h2 {
+  font-size: 2.5rem; margin-top: 1rem; margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #fcd34d, #f59e0b);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+.afk-overlay p { color: #cbd5e1; font-size: 1.2rem; margin: 0.2rem 0; }
+.afk-overlay p.afk-small { color: #94a3b8; font-size: 1rem; margin-top: 1rem; animation: pulse 2s infinite; }
+@keyframes pulse { 0% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; } 100% { transform: scale(1); opacity: 0.8; } }

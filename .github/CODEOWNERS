@@ -1,0 +1,9 @@
+# Arquivo de proteção do repositório (CODEOWNERS)
+# Define quem é o dono do código e quem deve aprovar mudanças na branch principal.
+
+# Todos os arquivos do projeto pertencem ao(s) criador(es)
+* @leleobragantini-droid
+
+# Você pode adicionar mais usuários do GitHub aqui para que eles também 
+# tenham permissões de aprovação de mudanças
+# Exemplo: * @leleobragantini-droid @outrodeveseus

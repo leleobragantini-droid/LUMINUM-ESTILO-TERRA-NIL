@@ -333,6 +333,25 @@ const VictoryScreen = ({ onRestart }) => (
 function GameUI({ game }) {
   const { grid, energy, phase, globalAcidity, globalTemp, biodiversity, placeTool } = game;
   const [selectedTool, setSelectedTool] = useState(null);
+  const [isAFK, setIsAFK] = useState(false);
+
+  React.useEffect(() => {
+    const checkAFK = () => {
+      setIsAFK(document.hidden || !document.hasFocus());
+    };
+    
+    // Verifica logica inicial e adiciona os event listeners
+    checkAFK();
+    window.addEventListener('focus', checkAFK);
+    window.addEventListener('blur', checkAFK);
+    document.addEventListener('visibilitychange', checkAFK);
+
+    return () => {
+      window.removeEventListener('focus', checkAFK);
+      window.removeEventListener('blur', checkAFK);
+      document.removeEventListener('visibilitychange', checkAFK);
+    };
+  }, []);
 
   const handleCellClick = (x, y) => {
     if (selectedTool) placeTool(x, y, selectedTool);
@@ -386,6 +405,15 @@ function GameUI({ game }) {
       </header>
 
       <main className="main-content">
+        {isAFK && (
+          <div className="afk-overlay" onClick={() => window.focus()}>
+            <Icons.PauseCircle size={64} color="#fcd34d" />
+            <h2>Jogo Pausado (AFK)</h2>
+            <p>O tempo e a energia pararam de rolar.</p>
+            <p className="afk-small">Clique aqui para voltar a jogar!</p>
+          </div>
+        )}
+
         <aside className="sidebar glass-panel">
           <h2>Ferramentas</h2>
           <div className="tools-list">
