@@ -114,34 +114,14 @@ export function checkOriginIntegrity() {
   return true;
 }
 
-// ─── Proteção Agressiva contra DevTools ───────────────────────────────────────
+// ─── Proteção contra DevTools ───────────────────────────────────────
 function _lockdownDevTools() {
-  // 1. Bloqueia botão direito
-  document.addEventListener('contextmenu', (e) => e.preventDefault());
-
-  // 2. Bloqueia teclas de atalho do console (F12, Ctrl+Shift+I, etc)
+  // 1. Bloqueia APENAS a tecla de atalho principal do console (F12)
   document.addEventListener('keydown', (e) => {
-    // F12
-    if (e.key === 'F12') e.preventDefault();
-    // Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C
-    if (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) e.preventDefault();
-    // Ctrl+U (Ver código-fonte)
-    if (e.ctrlKey && e.key.toUpperCase() === 'U') e.preventDefault();
+    if (e.key === 'F12') {
+      e.preventDefault();
+    }
   });
-
-  // 3. Armadilha infinita de debugger!
-  // Se o hacker conseguir abrir o console, o navegador vai travar infinitamente no debugger
-  setInterval(() => {
-    (function() {
-      return false;
-    }['constructor']('debugger')['call']());
-  }, 50);
-
-  // 4. Limpa o console continuamente
-  setInterval(() => {
-    console.clear();
-    _showConsoleWarning();
-  }, 2000);
 }
 
 // ─── Inicialização ────────────────────────────────────────────────────────────
