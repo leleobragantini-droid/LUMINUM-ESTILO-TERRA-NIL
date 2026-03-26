@@ -47,7 +47,7 @@ function App() {
 
       <header className="glass-panel top-header">
         <div className="game-title gradient-text">
-          <h1>Reefs & Rainforests</h1>
+          <h1>Cleaning Reefs</h1>
           <span className="phase-badge">Fase {phase}: {currentPhaseInfo.name}</span>
         </div>
         <div className="global-stats">

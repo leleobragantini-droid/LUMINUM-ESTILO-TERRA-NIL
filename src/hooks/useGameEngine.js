@@ -76,17 +76,25 @@ export const useGameEngine = () => {
           return updatedCell;
         }));
 
-        // Apply global effects from machines
-        let newGlobalAcidity = Math.max(0, prevState.globalAcidity - (activePurifiers * 0.5) - (activeMangroves * 1) - (coralCount * 0.1));
-        let newGlobalTemp = Math.max(0, prevState.globalTemp - (activeCoolers * 0.5));
+        let totalAcid = 0;
+        let totalTemp = 0;
 
-        // Let global impact local
+        // Apply global effects from machines and recalculate local averages
         const finalGrid = nextGrid.map(row => row.map(cell => {
            let finalCell = {...cell};
-           if (activePurifiers > 0) finalCell.acidLevel = Math.max(0, finalCell.acidLevel - 5); // simplified aura
-           if (activeCoolers > 0) finalCell.tempLevel = Math.max(0, finalCell.tempLevel - 5);
+           if (activePurifiers > 0) finalCell.acidLevel = Math.max(0, finalCell.acidLevel - (activePurifiers * 5)); 
+           if (activeCoolers > 0) finalCell.tempLevel = Math.max(0, finalCell.tempLevel - (activeCoolers * 5));
+           
+           // Mangroves and coral provide an across-the-board minimal relief
+           finalCell.acidLevel = Math.max(0, finalCell.acidLevel - (activeMangroves * 1) - (coralCount * 0.1));
+
+           totalAcid += finalCell.acidLevel;
+           totalTemp += finalCell.tempLevel;
            return finalCell;
         }));
+
+        let newGlobalAcidity = totalAcid / (GRID_SIZE * GRID_SIZE);
+        let newGlobalTemp = totalTemp / (GRID_SIZE * GRID_SIZE);
 
         const newEnergy = Math.min(9999, Math.floor(prevState.energy + newEnergyGen));
         
